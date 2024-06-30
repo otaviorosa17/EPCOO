@@ -188,16 +188,39 @@ class Enemy {
 		
 		for(int i = 0; i < enemy.getStates().length; i++){
 			
-			if(enemy.getStates()[i] == 1){
+			if(enemy.getStates()[i] == Main.ACTIVE){
 			
 				double dx = enemy.getX()[i] - projectile.getX()[k];
 				double dy = enemy.getY()[i] - projectile.getY()[k];
 				double dist = Math.sqrt(dx * dx + dy * dy);
 				
 				if(dist < enemy.getRadius()){
-					this.getStates()[i] = 2;
+					this.getStates()[i] = Main.EXPLODING;
 					this.getExplosion_start()[i] = currentTime;
 					this.getExplosion_end()[i] = currentTime + 500;
+				}
+			}
+		}
+	}
+	public void draw(long currentTime, Enemy enemy, int numEnemy) {
+		
+		for(int i = 0; i < enemy.getStates().length; i++){
+			
+			if(enemy.getStates()[i] == Main.EXPLODING){
+				
+				double alpha = (currentTime - enemy.getExplosion_start()[i]) / (enemy.getExplosion_end()[i] - enemy.getExplosion_start()[i]);
+				GameLib.drawExplosion(enemy.getX()[i], enemy.getY()[i], alpha);
+			}
+			
+			if(enemy.getStates()[i] == Main.ACTIVE){
+		
+				if (numEnemy == 1) {
+					GameLib.setColor(Color.CYAN);
+					GameLib.drawCircle(enemy.getX()[i], enemy.getY()[i], enemy.getRadius());
+				}
+				if (numEnemy == 2) {
+					GameLib.setColor(Color.MAGENTA);
+					GameLib.drawDiamond(enemy.getX()[i], enemy.getY()[i], enemy.getRadius());
 				}
 			}
 		}
@@ -207,7 +230,6 @@ class Enemy {
 class Enemy1 extends Enemy{
 	private long [] nextShoot;
 
-	
 	Enemy1(long currentTime){
 		super();
 		this.nextShoot = new long[10];
@@ -268,6 +290,9 @@ class Enemy1 extends Enemy{
 				super.setNextEnemy(currentTime + 500);
 			}
 		}
+	}
+	public void draw(long currentTime, Enemy enemy, int numEnemy) {
+		super.draw(currentTime, enemy, numEnemy);
 	}
 }
 
@@ -349,7 +374,9 @@ class Enemy2 extends Enemy{
 				}
 			}
 		}
-		
+	}
+	public void draw(long currentTime, Enemy enemy, int numEnemy) {
+		super.draw(currentTime, enemy, numEnemy);
 	}
  }
 
@@ -878,37 +905,11 @@ public class Main {
 			
 			/* desenhando inimigos (tipo 1) */
 			
-			for(int i = 0; i < enemy1.getStates().length; i++){
-				
-				if(enemy1.getStates()[i] == EXPLODING){
-					
-					double alpha = (currentTime - enemy1.getExplosion_start()[i]) / (enemy1.getExplosion_end()[i] - enemy1.getExplosion_start()[i]);
-					GameLib.drawExplosion(enemy1.getX()[i], enemy1.getY()[i], alpha);
-				}
-				
-				if(enemy1.getStates()[i] == ACTIVE){
-			
-					GameLib.setColor(Color.CYAN);
-					GameLib.drawCircle(enemy1.getX()[i], enemy1.getY()[i], enemy1.getRadius());
-				}
-			}
+			enemy1.draw(currentTime, enemy1, 1);
 			
 			/* desenhando inimigos (tipo 2) */
 			
-			for(int i = 0; i < enemy2.getStates().length; i++){
-				
-				if(enemy2.getStates()[i] == EXPLODING){
-					
-					double alpha = (currentTime - enemy2.getExplosion_start()[i]) / (enemy2.getExplosion_end()[i] - enemy2.getExplosion_start()[i]);
-					GameLib.drawExplosion(enemy2.getX()[i], enemy2.getY()[i], alpha);
-				}
-				
-				if(enemy2.getStates()[i] == ACTIVE){
-			
-					GameLib.setColor(Color.MAGENTA);
-					GameLib.drawDiamond(enemy2.getX()[i], enemy2.getY()[i], enemy2.getRadius());
-				}
-			}
+			enemy2.draw(currentTime, enemy2, 2);
 			
 			/* chamama a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
