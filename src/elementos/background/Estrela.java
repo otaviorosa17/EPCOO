@@ -1,7 +1,7 @@
 package elementos.background;
 
 import java.awt.Color;
-import lib.GameLib;
+import static lib.GameLib.*;
 
 public class Estrela {
 	private double [] X;
@@ -19,18 +19,18 @@ public class Estrela {
 		this.size = size;
 		this.count = 0;
 		for(int i = 0; i < this.X.length; i++){
-			this.X[i] = Math.random() * GameLib.WIDTH;
-			this.Y[i] = Math.random() * GameLib.HEIGHT;
+			this.X[i] = Math.random() * WIDTH;
+			this.Y[i] = Math.random() * HEIGHT;
 		}
 	}
 
 	public void draw(long delta) {
-        GameLib.setColor(this.cor);
+        setColor(this.cor);
         this.setCount(this.getCount() + this.getSpeed() * delta);
         
         for(int i = 0; i < this.getX().length; i++){
             
-            GameLib.fillRect(this.getX()[i], (this.getY()[i] + getCount()) % GameLib.HEIGHT, size, size);
+            fillRect(this.getX()[i], (this.getY()[i] + getCount()) % HEIGHT, size, size);
         }
     }
 

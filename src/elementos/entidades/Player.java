@@ -2,8 +2,8 @@ package elementos.entidades;
 
 import java.awt.Color;
 
-import lib.GameLib;
-import game.Main;
+import static lib.GameLib.*;
+import static game.Main.*;
 import elementos.projeteis.*;
 
 public class Player extends Entidade {
@@ -14,9 +14,9 @@ public class Player extends Entidade {
 
 	public Player(long currentTime) {
 		super(new int[1], new double[1], new double[1], new double[1], new double[1], 12.0);
-		this.states[0] = Main.ACTIVE;					// estados		
-		this.X[0] = GameLib.WIDTH / 2.0;				// coordenadas x
-		this.Y[0] = GameLib.HEIGHT * 0.90;				// coordenadas y
+		this.states[0] = ACTIVE;					// estados		
+		this.X[0] = WIDTH / 2.0;				// coordenadas x
+		this.Y[0] = HEIGHT * 0.90;				// coordenadas y
 		this.VX = new double[1];
 		this.VY = new double[1];
 		this.VX[0] = 0.25;
@@ -31,13 +31,13 @@ public class Player extends Entidade {
 	}
 
 	public void animacaoExplode(long currentTime, int i) {
-		states[0] = Main.EXPLODING;
+		states[0] = EXPLODING;
 		explosion_start[0] = currentTime;
 		explosion_end[0] = currentTime + 2000;
 	}
 
 	public void explode(long currentTime, Entidade colide) {
-		if(this.getStates()[0] == Main.ACTIVE){
+		if(this.getStates()[0] == ACTIVE){
 				
 			for(int i = 0; i < colide.getStates().length; i++){
 				
@@ -53,26 +53,26 @@ public class Player extends Entidade {
 	}
 
 	public void reset(long currentTime) {
-		if(states[0] == Main.EXPLODING){
+		if(states[0] == EXPLODING){
 
 			if(currentTime > explosion_end[0]){
 				
-				states[0] = Main.ACTIVE;
+				states[0] = ACTIVE;
 			}
 		}
 	}
 
 	public boolean keys(long delta, long currentTime, PlayerProjectile p) {
-		if(this.states[0] == Main.ACTIVE){
-			if(GameLib.iskeyPressed(GameLib.KEY_UP)) Y[0] -= delta * VY[0];
-			if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) Y[0] += delta * VY[0];
-			if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) X[0] -= delta * VX[0];
-			if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) X[0] += delta * VY[0];
-			if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
+		if(this.states[0] == ACTIVE){
+			if(iskeyPressed(KEY_UP)) Y[0] -= delta * VY[0];
+			if(iskeyPressed(KEY_DOWN)) Y[0] += delta * VY[0];
+			if(iskeyPressed(KEY_LEFT)) X[0] -= delta * VX[0];
+			if(iskeyPressed(KEY_RIGHT)) X[0] += delta * VY[0];
+			if(iskeyPressed(KEY_CONTROL)) {
 				
 				if(currentTime > this.getNextShot()){
 					
-					int free = Main.findFreeIndex(p.getStates());
+					int free = findFreeIndex(p.getStates());
 											
 					if(free < p.getStates().length){
 						
@@ -85,28 +85,28 @@ public class Player extends Entidade {
 					}
 				}	
 			}
-			if(GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) return false;
+			if(iskeyPressed(KEY_ESCAPE)) return false;
 		}
 		return true;
 	}
 
 	public void screenLimits() {
 		if(X[0] < 0.0) X[0] = 0.0;
-		if(X[0] >= GameLib.WIDTH) X[0] = GameLib.WIDTH - 1;
+		if(X[0] >= WIDTH) X[0] = WIDTH - 1;
 		if(Y[0] < 25.0) Y[0] = 25.0;
-		if(Y[0] >= GameLib.HEIGHT) Y[0] = GameLib.HEIGHT - 1;
+		if(Y[0] >= HEIGHT) Y[0] = HEIGHT - 1;
 	}
 
 	public void draw(long currentTime) {	
-		if(states[0] == Main.EXPLODING){
+		if(states[0] == EXPLODING){
 				
 			double alpha = (currentTime - explosion_start[0]) / (explosion_end[0] - explosion_start[0]);
-			GameLib.drawExplosion(X[0], Y[0], alpha);
+			drawExplosion(X[0], Y[0], alpha);
 		}
 		else{
 			
-			GameLib.setColor(Color.BLUE);
-			GameLib.drawPlayer(X[0], Y[0], radius);
+			setColor(Color.BLUE);
+			drawPlayer(X[0], Y[0], radius);
 		}
 	}
 }

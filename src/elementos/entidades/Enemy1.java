@@ -1,8 +1,8 @@
 package elementos.entidades;
 
-import lib.GameLib;
 import elementos.projeteis.EnemyProjectile;
-import game.Main;
+import static lib.GameLib.*;
+import static game.Main.*;
 
 public class Enemy1 extends Enemy {
 	private long [] nextShoot;
@@ -20,16 +20,16 @@ public class Enemy1 extends Enemy {
 	public void throwNew(long currentTime) {
 		if(currentTime > this.getNextEnemy()){
 				
-			int free = Main.findFreeIndex(this.getStates());
+			int free = findFreeIndex(this.getStates());
 							
 			if(free < this.getStates().length){
 				
-				this.getX()[free] = Math.random() * (GameLib.WIDTH - 20.0) + 10.0;
+				this.getX()[free] = Math.random() * (WIDTH - 20.0) + 10.0;
 				this.getY()[free] = -10.0;
 				this.getV()[free] = 0.20 + Math.random() * 0.15;
 				this.getAngle()[free] = 3 * Math.PI / 2;
 				this.getRV()[free] = 0.0;
-				this.getStates()[free] = Main.ACTIVE;
+				this.getStates()[free] = ACTIVE;
 				this.nextShoot[free] = currentTime + 500;
 				this.setNextEnemy(currentTime + 500);
 			}
@@ -39,20 +39,20 @@ public class Enemy1 extends Enemy {
 	public void status(Long currentTime, Long delta, EnemyProjectile enemy_projectile, Player player){
 		for(int i = 0; i < this.getStates().length; i++){
 				
-			if(this.getStates()[i] == Main.EXPLODING){
+			if(this.getStates()[i] == EXPLODING){
 				
 				if(currentTime > this.getExplosion_end()[i]){
 					
-					this.getStates()[i] = Main.INACTIVE;
+					this.getStates()[i] = INACTIVE;
 				}
 			}
 			
-			if(this.getStates()[i] == Main.ACTIVE){
+			if(this.getStates()[i] == ACTIVE){
 				
 				/* verificando se inimigo saiu da tela */
-				if(this.getY()[i] > GameLib.HEIGHT + 10) {
+				if(this.getY()[i] > HEIGHT + 10) {
 					
-					this.getStates()[i] = Main.INACTIVE;
+					this.getStates()[i] = INACTIVE;
 				}
 				else {
 				
@@ -62,7 +62,7 @@ public class Enemy1 extends Enemy {
 					
 					if(currentTime > this.getNextShoot()[i] && this.getY()[i] < player.getY()[0]){
 																						
-						int free = Main.findFreeIndex(enemy_projectile.getStates());
+						int free = findFreeIndex(enemy_projectile.getStates());
 						
 						if(free < enemy_projectile.getStates().length){
 							

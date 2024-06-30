@@ -1,8 +1,9 @@
 package elementos.entidades;
 
-import lib.GameLib;
+import static lib.GameLib.*;
+import static game.Main.*;
 import elementos.projeteis.EnemyProjectile;
-import game.Main;
+
 
 public class Enemy2 extends Enemy {
 	private double spawnX;
@@ -11,7 +12,7 @@ public class Enemy2 extends Enemy {
 	public Enemy2(long currentTime) {
 		super(12.0);
 		this.setNextEnemy(currentTime);
-		this.spawnX = GameLib.WIDTH * 0.20;
+		this.spawnX = WIDTH * 0.20;
 		count++;
 	}
 
@@ -22,7 +23,7 @@ public class Enemy2 extends Enemy {
 	public void throwNew(long currentTime) {
 		if(currentTime > this.getNextEnemy()){
 				
-			int free = Main.findFreeIndex(this.getStates());
+			int free = findFreeIndex(this.getStates());
 							
 			if(free < this.getStates().length){
 				
@@ -31,7 +32,7 @@ public class Enemy2 extends Enemy {
 				this.getV()[free] = 0.42;
 				this.getAngle()[free] = (3 * Math.PI) / 2;
 				this.getRV()[free] = 0.0;
-				this.getStates()[free] = Main.ACTIVE;
+				this.getStates()[free] = ACTIVE;
 
 				count++;
 				
@@ -41,7 +42,7 @@ public class Enemy2 extends Enemy {
 				}
 				else {
 					count = 0;
-					spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
+					spawnX = Math.random() > 0.5 ? WIDTH * 0.2 : WIDTH * 0.8;
 					this.setNextEnemy((long) (currentTime + 3000 + Math.random() * 3000));
 				}
 			}
@@ -51,20 +52,20 @@ public class Enemy2 extends Enemy {
 	public void status(Long currentTime, Long delta, EnemyProjectile enemy_projectile, Player player){
 		for(int i = 0; i < this.getStates().length; i++){
 				
-			if(this.getStates()[i] == Main.EXPLODING){
+			if(this.getStates()[i] == EXPLODING){
 				
 				if(currentTime > this.getExplosion_end()[i]){
 					
-					this.getStates()[i] = Main.INACTIVE;
+					this.getStates()[i] = INACTIVE;
 				}
 			}
 			
-			if(this.getStates()[i] == Main.ACTIVE){
+			if(this.getStates()[i] == ACTIVE){
 				
 				/* verificando se inimigo saiu da tela */
-				if(	this.getX()[i] < -10 || this.getX()[i] > GameLib.WIDTH + 10 ) {
+				if(	this.getX()[i] < -10 || this.getX()[i] > WIDTH + 10 ) {
 					
-					this.getStates()[i] = Main.INACTIVE;
+					this.getStates()[i] = INACTIVE;
 				}
 				else {
 					
@@ -75,11 +76,11 @@ public class Enemy2 extends Enemy {
 					this.getY()[i] += this.getV()[i] * Math.sin(this.getAngle()[i]) * delta * (-1.0);
 					this.getAngle()[i] += this.getRV()[i] * delta;
 					
-					double threshold = GameLib.HEIGHT * 0.30;
+					double threshold = HEIGHT * 0.30;
 					
 					if(previousY < threshold && this.getY()[i] >= threshold) {
 						
-						if(this.getX()[i] < GameLib.WIDTH / 2) this.getRV()[i] = 0.003;
+						if(this.getX()[i] < WIDTH / 2) this.getRV()[i] = 0.003;
 						else this.getRV()[i] = -0.003;
 					}
 					
@@ -100,7 +101,7 @@ public class Enemy2 extends Enemy {
 					if(shootNow){
 
 						double [] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
-						int [] freeArray = Main.findFreeIndex(enemy_projectile.getStates(), angles.length);
+						int [] freeArray = findFreeIndex(enemy_projectile.getStates(), angles.length);
 
 						for(int k = 0; k < freeArray.length; k++){
 							
