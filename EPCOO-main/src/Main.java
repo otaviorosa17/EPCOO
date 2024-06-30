@@ -22,6 +22,7 @@ class Player {
 		this.explosion_end = 0;						// instante do final da explosão
 		this.nextShot = currentTime;
 	}
+	
 	public double getVX() {
 		return VX;
 	}
@@ -49,15 +50,15 @@ class Player {
 	public int getState() {
 		return state;
 	}
-	public void explode(long currentTime, Player player, Enemy colidiu) {
-		
+	
+	public void explode(long currentTime, Enemy colidiu) {	
 		for(int i = 0; i < colidiu.getStates().length; i++){
 			
-			double dx = colidiu.getX()[i] - player.getX();
-			double dy = colidiu.getY()[i] - player.getY();
+			double dx = colidiu.getX()[i] - this.getX();
+			double dy = colidiu.getY()[i] - this.getY();
 			double dist = Math.sqrt(dx * dx + dy * dy);
 			
-			if(dist < (player.getRadius() + colidiu.getRadius()) * 0.8){
+			if(dist < (this.getRadius() + colidiu.getRadius()) * 0.8){
 				state = Main.EXPLODING;
 				explosion_start = currentTime;
 				explosion_end = currentTime + 2000;
@@ -65,6 +66,7 @@ class Player {
 		}
 		
 	}
+	
 	public void reset(long currentTime) {
 		if(state == Main.EXPLODING){
 
@@ -74,7 +76,7 @@ class Player {
 			}
 		}
 	}
-
+	
 	public boolean keys(long delta, long currentTime, PlayerProjectile p) {
 		if(this.state == Main.ACTIVE){
 			if(GameLib.iskeyPressed(GameLib.KEY_UP)) Y -= delta * VY;
@@ -102,14 +104,14 @@ class Player {
 		}
 		return true;
 	}
-
+	
 	public void screenLimits() {
 		if(X < 0.0) X = 0.0;
 		if(X >= GameLib.WIDTH) X = GameLib.WIDTH - 1;
 		if(Y < 25.0) Y = 25.0;
 		if(Y >= GameLib.HEIGHT) Y = GameLib.HEIGHT - 1;
 	}
-
+	
 	public void draw(long currentTime) {	
 		if(state == Main.EXPLODING){
 				
@@ -184,17 +186,17 @@ class Enemy {
 	public void setRadius(double radius) {
 		this.radius = radius;
 	}
-	public void explode(long currentTime, int k, Enemy enemy, PlayerProjectile projectile) {
-		
-		for(int i = 0; i < enemy.getStates().length; i++){
+	
+	public void explode(long currentTime, int k, PlayerProjectile projectile) {	
+		for(int i = 0; i < this.getStates().length; i++){
 			
-			if(enemy.getStates()[i] == Main.ACTIVE){
+			if(this.getStates()[i] == Main.ACTIVE){
 			
-				double dx = enemy.getX()[i] - projectile.getX()[k];
-				double dy = enemy.getY()[i] - projectile.getY()[k];
+				double dx = this.getX()[i] - projectile.getX()[k];
+				double dy = this.getY()[i] - projectile.getY()[k];
 				double dist = Math.sqrt(dx * dx + dy * dy);
 				
-				if(dist < enemy.getRadius()){
+				if(dist < this.getRadius()){
 					this.getStates()[i] = Main.EXPLODING;
 					this.getExplosion_start()[i] = currentTime;
 					this.getExplosion_end()[i] = currentTime + 500;
@@ -202,25 +204,25 @@ class Enemy {
 			}
 		}
 	}
-	public void draw(long currentTime, Enemy enemy, int numEnemy) {
-		
-		for(int i = 0; i < enemy.getStates().length; i++){
+	
+	public void draw(long currentTime, int numEnemy) {	
+		for(int i = 0; i < this.getStates().length; i++){
 			
-			if(enemy.getStates()[i] == Main.EXPLODING){
+			if(this.getStates()[i] == Main.EXPLODING){
 				
-				double alpha = (currentTime - enemy.getExplosion_start()[i]) / (enemy.getExplosion_end()[i] - enemy.getExplosion_start()[i]);
-				GameLib.drawExplosion(enemy.getX()[i], enemy.getY()[i], alpha);
+				double alpha = (currentTime - this.getExplosion_start()[i]) / (this.getExplosion_end()[i] - this.getExplosion_start()[i]);
+				GameLib.drawExplosion(this.getX()[i], this.getY()[i], alpha);
 			}
 			
-			if(enemy.getStates()[i] == Main.ACTIVE){
+			if(this.getStates()[i] == Main.ACTIVE){
 		
 				if (numEnemy == 1) {
 					GameLib.setColor(Color.CYAN);
-					GameLib.drawCircle(enemy.getX()[i], enemy.getY()[i], enemy.getRadius());
+					GameLib.drawCircle(this.getX()[i], this.getY()[i], this.getRadius());
 				}
 				if (numEnemy == 2) {
 					GameLib.setColor(Color.MAGENTA);
-					GameLib.drawDiamond(enemy.getX()[i], enemy.getY()[i], enemy.getRadius());
+					GameLib.drawDiamond(this.getX()[i], this.getY()[i], this.getRadius());
 				}
 			}
 		}
@@ -270,9 +272,11 @@ class Enemy1 extends Enemy{
 	public long[] getNextShoot() {
 		return nextShoot;
 	}
-	public void explode(long currentTime, int k, Enemy enemy, PlayerProjectile projectile) {
-		super.explode(currentTime, k, enemy, projectile);
+	
+	public void explode(long currentTime, int k, PlayerProjectile projectile) {
+		super.explode(currentTime, k, projectile);
 	}
+	
 	public void throwNew(long currentTime) {
 		if(currentTime > super.getNextEnemy()){
 				
@@ -291,8 +295,10 @@ class Enemy1 extends Enemy{
 			}
 		}
 	}
-	public void draw(long currentTime, Enemy enemy, int numEnemy) {
-		super.draw(currentTime, enemy, numEnemy);
+	
+	
+	public void draw(long currentTime, int numEnemy) {
+		super.draw(currentTime, numEnemy);
 	}
 }
 
@@ -344,9 +350,10 @@ class Enemy2 extends Enemy{
 	public double getSpawnX() {
 		return spawnX;
 	}	
-	public void explode(long currentTime, int k, Enemy enemy, PlayerProjectile projectile) {
-		super.explode(currentTime, k, enemy, projectile);
+	public void explode(long currentTime, int k, PlayerProjectile projectile) {
+		super.explode(currentTime, k, projectile);
 	}
+	
 	public void throwNew(long currentTime) {
 		if(currentTime > super.getNextEnemy()){
 				
@@ -375,11 +382,11 @@ class Enemy2 extends Enemy{
 			}
 		}
 	}
-	public void draw(long currentTime, Enemy enemy, int numEnemy) {
-		super.draw(currentTime, enemy, numEnemy);
+	
+	public void draw(long currentTime, int numEnemy) {
+		super.draw(currentTime, numEnemy);
 	}
  }
-
 
 class Projectile {
 	private int [] states;					// estados
@@ -459,9 +466,11 @@ class PlayerProjectile {
 	public double [] getVY() {
 		return p.getVY();
 	}
+	
 	public void track(long delta) {
 		p.track(delta);
 	}
+	
 	public void draw () {
 		for(int i = 0; i < this.getStates().length; i++){
 			
@@ -475,9 +484,11 @@ class PlayerProjectile {
 		}
 	}
 }
+
 class EnemyProjectile extends Enemy {
 	private Projectile p;
 	private double radius;
+	
 	public EnemyProjectile() {
 		this.p = new Projectile(new int [200], new double[200], new double[200], new double[200], new double[200]);
 		this.p.initializeStates();
@@ -502,9 +513,11 @@ class EnemyProjectile extends Enemy {
 	public double getRadius() {
 		return radius;
 	}
+	
 	public void track(long delta) {
 		p.track(delta);
 	}
+	
 	public void draw() {
 		for(int i = 0; i < this.getStates().length; i++){
 			
@@ -517,11 +530,7 @@ class EnemyProjectile extends Enemy {
 	}
 }
 
-
-
-
-class Background {
-			
+class Background {			
 	private double [] X;
 	private double [] Y;
 	private double speed;
@@ -712,11 +721,11 @@ public class Main {
 			if(player.getState() == ACTIVE){
 				
 				/* colisões player - projeteis (inimigo) */
-				player.explode(currentTime, player, enemy_projectile);
+				player.explode(currentTime, enemy_projectile);
 			
 				/* colisões player - inimigos */
-				player.explode(currentTime, player, enemy1);
-				player.explode(currentTime, player, enemy2);
+				player.explode(currentTime, enemy1);
+				player.explode(currentTime, enemy2);
 						
 			}
 			
@@ -724,8 +733,8 @@ public class Main {
 			
 			for(int k = 0; k < player_projectile.getStates().length; k++){
 				
-				enemy1.explode(currentTime, k, enemy1, player_projectile);
-				enemy2.explode(currentTime, k, enemy2, player_projectile);
+				enemy1.explode(currentTime, k, player_projectile);
+				enemy2.explode(currentTime, k, player_projectile);
 							
 			}
 			
@@ -900,7 +909,6 @@ public class Main {
 			
 			player.draw(currentTime);
 				
-			
 			/* deenhando projeteis (player) */
 			
 			player_projectile.draw();
@@ -911,11 +919,11 @@ public class Main {
 			
 			/* desenhando inimigos (tipo 1) */
 			
-			enemy1.draw(currentTime, enemy1, 1);
+			enemy1.draw(currentTime, 1);
 			
 			/* desenhando inimigos (tipo 2) */
 			
-			enemy2.draw(currentTime, enemy2, 2);
+			enemy2.draw(currentTime, 2);
 			
 			/* chamama a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
