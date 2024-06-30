@@ -187,19 +187,21 @@ class Enemy {
 		this.radius = radius;
 	}
 	
-	public void explode(long currentTime, int k, PlayerProjectile projectile) {	
-		for(int i = 0; i < this.getStates().length; i++){
+	public void explode(long currentTime, PlayerProjectile projectile) {
+		for(int k = 0; k < projectile.getStates().length; k++){
+			for(int i = 0; i < this.getStates().length; i++){
 			
-			if(this.getStates()[i] == Main.ACTIVE){
+				if(this.getStates()[i] == Main.ACTIVE){
 			
-				double dx = this.getX()[i] - projectile.getX()[k];
-				double dy = this.getY()[i] - projectile.getY()[k];
-				double dist = Math.sqrt(dx * dx + dy * dy);
+					double dx = this.getX()[i] - projectile.getX()[k];
+					double dy = this.getY()[i] - projectile.getY()[k];
+					double dist = Math.sqrt(dx * dx + dy * dy);
 				
-				if(dist < this.getRadius()){
-					this.getStates()[i] = Main.EXPLODING;
-					this.getExplosion_start()[i] = currentTime;
-					this.getExplosion_end()[i] = currentTime + 500;
+					if(dist < this.getRadius()){
+						this.getStates()[i] = Main.EXPLODING;
+						this.getExplosion_start()[i] = currentTime;
+						this.getExplosion_end()[i] = currentTime + 500;
+					}
 				}
 			}
 		}
@@ -273,8 +275,8 @@ class Enemy1 extends Enemy{
 		return nextShoot;
 	}
 	
-	public void explode(long currentTime, int k, PlayerProjectile projectile) {
-		super.explode(currentTime, k, projectile);
+	public void explode(long currentTime, PlayerProjectile projectile) {
+		super.explode(currentTime, projectile);
 	}
 	
 	public void throwNew(long currentTime) {
@@ -350,8 +352,8 @@ class Enemy2 extends Enemy{
 	public double getSpawnX() {
 		return spawnX;
 	}	
-	public void explode(long currentTime, int k, PlayerProjectile projectile) {
-		super.explode(currentTime, k, projectile);
+	public void explode(long currentTime, PlayerProjectile projectile) {
+		super.explode(currentTime, projectile);
 	}
 	
 	public void throwNew(long currentTime) {
@@ -730,14 +732,9 @@ public class Main {
 			}
 			
 			/* colisões projeteis (player) - inimigos */
-			
-			for(int k = 0; k < player_projectile.getStates().length; k++){
-				
-				enemy1.explode(currentTime, k, player_projectile);
-				enemy2.explode(currentTime, k, player_projectile);
-							
-			}
-			
+					
+				enemy1.explode(currentTime, player_projectile);
+				enemy2.explode(currentTime, player_projectile);
 				
 			/***************************/
 			/* Atualizações de estados */
@@ -745,11 +742,11 @@ public class Main {
 			
 			/* projeteis (player) */
 			
-			player_projectile.track(delta);
+				player_projectile.track(delta);
 			
 			/* projeteis (inimigos) */
 			
-			enemy_projectile.track(delta);
+				enemy_projectile.track(delta);
 
 			/* inimigos tipo 1 */
 			
@@ -874,27 +871,27 @@ public class Main {
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lançados" */
 			
-			enemy1.throwNew(currentTime);
+				enemy1.throwNew(currentTime);
 			
 			/* verificando se novos inimigos (tipo 2) devem ser "lançados" */
 			
-			enemy2.throwNew(currentTime);
+				enemy2.throwNew(currentTime);
 			
 			/* Verificando se a explosão do player já acabou.         */
 			/* Ao final da explosão, o player volta a ser controlável */
-			player.reset(currentTime);
+				player.reset(currentTime);
 			
 			/********************************************/
 			/* Verificando entrada do usuário (teclado) */
 			/********************************************/
 			// vamo fazer um método do player pra isso dps, mas preisaria criar o objeto do projétil antes
 			
-			running = player.keys(delta, currentTime, player_projectile);
+				running = player.keys(delta, currentTime, player_projectile);
 			
 			/* Verificando se coordenadas do player ainda estão dentro	*/
 			/* da tela de jogo após processar entrada do usuário.       */
 			
-			player.screenLimits();
+				player.screenLimits();
 
 			/*******************/
 			/* Desenho da cena */
@@ -902,36 +899,36 @@ public class Main {
 			
 			/* desenhando plano fundo distante */
 			
-			estrela1.draw(delta, Color.GRAY, 3);
+				estrela1.draw(delta, Color.GRAY, 3);
 			estrela2.draw(delta, Color.DARK_GRAY, 2);
 						
 			/* desenhando player */
 			
-			player.draw(currentTime);
+				player.draw(currentTime);
 				
 			/* deenhando projeteis (player) */
 			
-			player_projectile.draw();
+				player_projectile.draw();
 			
 			/* desenhando projeteis (inimigos) */
 		
-			enemy_projectile.draw();
+				enemy_projectile.draw();
 			
 			/* desenhando inimigos (tipo 1) */
 			
-			enemy1.draw(currentTime, 1);
+				enemy1.draw(currentTime, 1);
 			
 			/* desenhando inimigos (tipo 2) */
 			
-			enemy2.draw(currentTime, 2);
+				enemy2.draw(currentTime, 2);
 			
 			/* chamama a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
-			GameLib.display();
+				GameLib.display();
 			
 			/* faz uma pausa de modo que cada execução do laço do main loop demore aproximadamente 5 ms. */
 			
-			busyWait(currentTime + 5);
+				busyWait(currentTime + 5);
 		}
 		
 		System.exit(0);
