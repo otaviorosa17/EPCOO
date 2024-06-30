@@ -462,6 +462,18 @@ class PlayerProjectile {
 	public void track(long delta) {
 		p.track(delta);
 	}
+	public void draw () {
+		for(int i = 0; i < this.getStates().length; i++){
+			
+			if(this.getStates()[i] == Main.ACTIVE){
+				
+				GameLib.setColor(Color.GREEN);
+				GameLib.drawLine(this.getX()[i], this.getY()[i] - 5, this.getX()[i], this.getY()[i] + 5);
+				GameLib.drawLine(this.getX()[i] - 1, this.getY()[i] - 3, this.getX()[i] - 1, this.getY()[i] + 3);
+				GameLib.drawLine(this.getX()[i] + 1, this.getY()[i] - 3, this.getX()[i] + 1, this.getY()[i] + 3);
+			}
+		}
+	}
 }
 class EnemyProjectile extends Enemy {
 	private Projectile p;
@@ -492,6 +504,16 @@ class EnemyProjectile extends Enemy {
 	}
 	public void track(long delta) {
 		p.track(delta);
+	}
+	public void draw() {
+		for(int i = 0; i < this.getStates().length; i++){
+			
+			if(this.getStates()[i] == Main.ACTIVE){
+
+				GameLib.setColor(Color.RED);
+				GameLib.drawCircle(this.getX()[i], this.getY()[i], this.getRadius());
+			}
+		}
 	}
 }
 
@@ -881,27 +903,11 @@ public class Main {
 			
 			/* deenhando projeteis (player) */
 			
-			for(int i = 0; i < player_projectile.getStates().length; i++){
-				
-				if(player_projectile.getStates()[i] == ACTIVE){
-					
-					GameLib.setColor(Color.GREEN);
-					GameLib.drawLine(player_projectile.getX()[i], player_projectile.getY()[i] - 5, player_projectile.getX()[i], player_projectile.getY()[i] + 5);
-					GameLib.drawLine(player_projectile.getX()[i] - 1, player_projectile.getY()[i] - 3, player_projectile.getX()[i] - 1, player_projectile.getY()[i] + 3);
-					GameLib.drawLine(player_projectile.getX()[i] + 1, player_projectile.getY()[i] - 3, player_projectile.getX()[i] + 1, player_projectile.getY()[i] + 3);
-				}
-			}
+			player_projectile.draw();
 			
 			/* desenhando projeteis (inimigos) */
 		
-			for(int i = 0; i < enemy_projectile.getStates().length; i++){
-				
-				if(enemy_projectile.getStates()[i] == ACTIVE){
-	
-					GameLib.setColor(Color.RED);
-					GameLib.drawCircle(enemy_projectile.getX()[i], enemy_projectile.getY()[i], enemy_projectile.getRadius());
-				}
-			}
+			enemy_projectile.draw();
 			
 			/* desenhando inimigos (tipo 1) */
 			
